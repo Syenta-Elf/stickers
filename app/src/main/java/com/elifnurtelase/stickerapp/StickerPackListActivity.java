@@ -47,9 +47,11 @@ public class StickerPackListActivity extends AddStickerPackActivity {
             public void onInitializationComplete(InitializationStatus initializationStatus) {
             }
         });
+
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+
 
         packRecyclerView = findViewById(R.id.sticker_pack_list);
         stickerPackList = getIntent().getParcelableArrayListExtra(EXTRA_STICKER_PACK_LIST_DATA);
