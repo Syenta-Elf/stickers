@@ -63,6 +63,7 @@ public class StickerPackDetailsActivity extends AddStickerPackActivity {
 
     private AdView mAdView;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
