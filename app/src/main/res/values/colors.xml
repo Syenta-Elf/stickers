@@ -2,9 +2,10 @@
 <resources>
     <color name="colorPrimary">@android:color/transparent</color>
     <color name="colorPrimaryDark">#BABABA</color>
-    <color name="colorAccent">#128C7E</color>
+    <color name="actionBarColor">#4D4C7D</color>
+    <color name="colorAccent">#D8B9C3</color>
     <color name="inactiveAddButtonColor">#B3B3B3</color>
-    <color name="infoPageBackgroundColor">#EBEBEB</color>
     <color name="actionBarArrowColor">@color/colorAccent</color>
-    <color name="animatedStickerIndicator">#66000000</color>
+    <color name="actionBarTitleText">@color/colorAccent</color>
+    <color name="animatedStickerIndicator">#66060606</color>
 </resources>
