@@ -37,13 +37,15 @@ public class EntryActivity extends BaseActivity {
         progressBar = findViewById(R.id.entry_activity_progress);
         loadListAsyncTask = new LoadListAsyncTask(this);
         loadListAsyncTask.execute();
+
     }
 
     private void showStickerPack(ArrayList<StickerPack> stickerPackList) {
         progressBar.setVisibility(View.GONE);
+        //StickerPackListActivity Changed with WelcomeActivity
         if (stickerPackList.size() > 1) {
-            final Intent intent = new Intent(this, StickerPackListActivity.class);
-            intent.putParcelableArrayListExtra(StickerPackListActivity.EXTRA_STICKER_PACK_LIST_DATA, stickerPackList);
+            final Intent intent = new Intent(this, WelcomeActivity.class);
+            intent.putParcelableArrayListExtra(WelcomeActivity.EXTRA_STICKER_PACK_LIST_DATA, stickerPackList);
             startActivity(intent);
             finish();
             overridePendingTransition(0, 0);

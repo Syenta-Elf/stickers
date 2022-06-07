@@ -18,11 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
@@ -43,9 +38,6 @@ public class StickerPackListActivity extends AddStickerPackActivity {
     private WhiteListCheckAsyncTask whiteListCheckAsyncTask;
     private ArrayList<StickerPack> stickerPackList;
 
-    private static final String AD_UNIT_ID = "ca-app-pub-3940256099942544/1033173712";
-    private static final String TAG = "MyActivity";
-    private AdView mAdView;
     private InterstitialAd mInterstitialAd;
 
     @Override
@@ -53,39 +45,12 @@ public class StickerPackListActivity extends AddStickerPackActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sticker_pack_list);
 
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
-            }
-        });
-
-        mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-
-        InterstitialAd.load(this,"ca-app-pub-3940256099942544/1033173712", adRequest,
-                new InterstitialAdLoadCallback() {
-                    @Override
-                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-                        // The mInterstitialAd reference will be null until
-                        // an ad is loaded.
-                        mInterstitialAd = interstitialAd;
-                        Log.i(TAG, "onAdLoaded");
-                        if (mInterstitialAd != null) {
-                            mInterstitialAd.show(StickerPackListActivity.this);
-                        } else {
-                            Log.d("TAG", "The interstitial ad wasn't ready yet.");
-                        }                    }
-
-                });
-
         packRecyclerView = findViewById(R.id.sticker_pack_list);
         stickerPackList = getIntent().getParcelableArrayListExtra(EXTRA_STICKER_PACK_LIST_DATA);
         showStickerPackList(stickerPackList);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(getResources().getQuantityString(R.plurals.title_activity_sticker_packs_list, stickerPackList.size()));
         }
-
     }
 
     @Override
@@ -102,22 +67,6 @@ public class StickerPackListActivity extends AddStickerPackActivity {
         if (whiteListCheckAsyncTask != null && !whiteListCheckAsyncTask.isCancelled()) {
             whiteListCheckAsyncTask.cancel(true);
         }
-        AdRequest adRequest = new AdRequest.Builder().build();
-        InterstitialAd.load(this,"ca-app-pub-3940256099942544/1033173712", adRequest,
-                new InterstitialAdLoadCallback() {
-                    @Override
-                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-                        // The mInterstitialAd reference will be null until
-                        // an ad is loaded.
-                        mInterstitialAd = interstitialAd;
-                        Log.i(TAG, "onAdLoaded");
-                        if (mInterstitialAd != null) {
-                            mInterstitialAd.show(StickerPackListActivity.this);
-                        } else {
-                            Log.d("TAG", "The interstitial ad wasn't ready yet.");
-                        }                    }
-
-                });
     }
 
     private void showStickerPackList(List<StickerPack> stickerPackList) {

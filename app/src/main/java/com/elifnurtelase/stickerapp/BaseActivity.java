@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 public abstract class BaseActivity extends AppCompatActivity {
+
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
