@@ -10,6 +10,7 @@ package com.elifnurtelase.stickerapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,11 +26,13 @@ import java.util.ArrayList;
 public class EntryActivity extends BaseActivity {
     private View progressBar;
     private LoadListAsyncTask loadListAsyncTask;
+    private StickersDB stickersDB;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entry);
+        stickersDB = new StickersDB(this);
         overridePendingTransition(0, 0);
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
@@ -45,6 +48,13 @@ public class EntryActivity extends BaseActivity {
         //StickerPackListActivity Changed with WelcomeActivity
         if (stickerPackList.size() > 1) {
             final Intent intent = new Intent(this, WelcomeActivity.class);
+
+            SharedPreferences prefs = this.getSharedPreferences("prefs", Context.MODE_PRIVATE);
+            boolean firstStart = prefs.getBoolean("firstStart", true);
+            if(firstStart){
+                createTableOnFirstStart(stickerPackList);
+            }
+
             intent.putParcelableArrayListExtra(WelcomeActivity.EXTRA_STICKER_PACK_LIST_DATA, stickerPackList);
             startActivity(intent);
             finish();
@@ -116,5 +126,13 @@ public class EntryActivity extends BaseActivity {
                 }
             }
         }
+    }
+    private void createTableOnFirstStart(ArrayList<StickerPack> stickerPackList) {
+
+        stickerPackList.forEach(stickerPack -> stickerPack.getStickers().forEach(sticker -> stickersDB.insertIntoTheDatabase(stickerPack.getStickers().indexOf(sticker),sticker.imageFileName,stickerPack.identifier,sticker.getSticker_id(),"0")));
+        SharedPreferences prefs = this.getSharedPreferences("prefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("firstStart", false);
+        editor.apply();
     }
 }

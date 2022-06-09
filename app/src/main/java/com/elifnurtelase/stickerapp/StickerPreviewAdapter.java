@@ -8,6 +8,8 @@
 
 package com.elifnurtelase.stickerapp;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,7 +48,8 @@ public class StickerPreviewAdapter extends RecyclerView.Adapter<StickerPreviewVi
             final int cellSize,
             final int cellPadding,
             @NonNull final StickerPack stickerPack,
-            final SimpleDraweeView expandedStickerView) {
+            final SimpleDraweeView expandedStickerView,
+            final Context context) {
         this.cellSize = cellSize;
         this.cellPadding = cellPadding;
         this.cellLimit = 0;
@@ -59,6 +62,7 @@ public class StickerPreviewAdapter extends RecyclerView.Adapter<StickerPreviewVi
     @NonNull
     @Override
     public StickerPreviewViewHolder onCreateViewHolder(@NonNull final ViewGroup viewGroup, final int i) {
+
         View itemView = layoutInflater.inflate(R.layout.sticker_image_item, viewGroup, false);
         StickerPreviewViewHolder vh = new StickerPreviewViewHolder(itemView);
 

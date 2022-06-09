@@ -17,10 +17,16 @@ class Sticker implements Parcelable {
     final String imageFileName;
     final List<String> emojis;
     long size;
+    private String favStatus;
+    private String sticker_id;
+    private static Integer counter = 1;
 
     Sticker(String imageFileName, List<String> emojis) {
         this.imageFileName = imageFileName;
         this.emojis = emojis;
+        this.favStatus = "0";
+        this.sticker_id = counter.toString();
+        counter++;
     }
 
     private Sticker(Parcel in) {
@@ -55,5 +61,17 @@ class Sticker implements Parcelable {
         dest.writeString(imageFileName);
         dest.writeStringList(emojis);
         dest.writeLong(size);
+    }
+
+    public String getFavStatus() {
+        return favStatus;
+    }
+
+    public void setFavStatus(String favStatus) {
+        this.favStatus = favStatus;
+    }
+
+    public String getSticker_id() {
+        return sticker_id;
     }
 }

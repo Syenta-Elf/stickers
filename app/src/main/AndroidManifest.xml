@@ -22,9 +22,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning" >
-        <activity
-            android:name=".WelcomeActivity"
-            android:exported="false" />
+
         <!-- Add Mob -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
@@ -39,6 +37,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".WelcomeActivity"
+            android:exported="false" />
         <activity android:name=".StickerPackListActivity" />
         <activity
             android:name=".StickerPackDetailsActivity"
