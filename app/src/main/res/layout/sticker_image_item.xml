@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.facebook.drawee.view.SimpleDraweeView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/sticker_preview"
-    android:layout_width="@dimen/sticker_pack_details_image_size"
-    android:layout_height="@dimen/sticker_pack_details_image_size"
-    android:padding="@dimen/sticker_pack_details_image_padding"
-    android:scaleType="centerCrop" />
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="wrap_content">
+
+    <com.facebook.drawee.view.SimpleDraweeView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/sticker_preview"
+        android:layout_width="@dimen/sticker_pack_details_image_size"
+        android:layout_height="@dimen/sticker_pack_details_image_size"
+        android:padding="@dimen/sticker_pack_details_image_padding"
+        android:scaleType="centerCrop" />
+
+    <ImageButton
+        android:id="@+id/not_favorite_sticker"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="48dp"
+        android:src="@drawable/heart"
+        android:background="#00000000"></ImageButton>
+
+</FrameLayout>

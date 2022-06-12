@@ -8,15 +8,20 @@
 
 package com.elifnurtelase.stickerapp;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.format.Formatter;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,13 +30,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 public class StickerPackDetailsActivity extends AddStickerPackActivity {
 
@@ -57,30 +58,32 @@ public class StickerPackDetailsActivity extends AddStickerPackActivity {
     private int numColumns;
     private View addButton;
     private View alreadyAddedText;
+    private ImageButton favButton;
     private StickerPack stickerPack;
     private View divider;
     private WhiteListCheckAsyncTask whiteListCheckAsyncTask;
-
+    private StickersDB stickersDB;
+    private ArrayList<FavoriteSticker> allStickers = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sticker_pack_details);
 
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
-            }
-        });
-
+        stickersDB = new StickersDB(this);
 
         boolean showUpButton = getIntent().getBooleanExtra(EXTRA_SHOW_UP_BUTTON, false);
+
         stickerPack = getIntent().getParcelableExtra(EXTRA_STICKER_PACK_DATA);
+
+        loadPackData();
+
         TextView packNameTextView = findViewById(R.id.pack_name);
         TextView packPublisherTextView = findViewById(R.id.author);
         ImageView packTrayIcon = findViewById(R.id.tray_image);
         TextView packSizeTextView = findViewById(R.id.pack_size);
         SimpleDraweeView expandedStickerView = findViewById(R.id.sticker_details_expanded_sticker);
+        favButton = findViewById(R.id.not_favorite_sticker);
 
         addButton = findViewById(R.id.add_to_whatsapp_button);
         alreadyAddedText = findViewById(R.id.already_added_text);
@@ -91,7 +94,7 @@ public class StickerPackDetailsActivity extends AddStickerPackActivity {
         recyclerView.addOnScrollListener(dividerScrollListener);
         divider = findViewById(R.id.divider);
         if (stickerPreviewAdapter == null) {
-            stickerPreviewAdapter = new StickerPreviewAdapter(getLayoutInflater(), R.drawable.sticker_error, getResources().getDimensionPixelSize(R.dimen.sticker_pack_details_image_size), getResources().getDimensionPixelSize(R.dimen.sticker_pack_details_image_padding), stickerPack, expandedStickerView,this);
+            stickerPreviewAdapter = new StickerPreviewAdapter(getLayoutInflater(), R.drawable.sticker_error, getResources().getDimensionPixelSize(R.dimen.sticker_pack_details_image_size), getResources().getDimensionPixelSize(R.dimen.sticker_pack_details_image_padding), stickerPack, expandedStickerView, stickersDB,allStickers);
             recyclerView.setAdapter(stickerPreviewAdapter);
         }
         packNameTextView.setText(stickerPack.name);
@@ -104,6 +107,7 @@ public class StickerPackDetailsActivity extends AddStickerPackActivity {
             getSupportActionBar().setTitle(showUpButton ? getResources().getString(R.string.title_activity_sticker_pack_details_multiple_pack) : getResources().getQuantityString(R.plurals.title_activity_sticker_packs_list, 1));
         }
         findViewById(R.id.sticker_pack_animation_indicator).setVisibility(stickerPack.animatedStickerPack ? View.VISIBLE : View.GONE);
+
     }
 
     private void launchInfoActivity(String publisherWebsite, String publisherEmail, String privacyPolicyWebsite, String licenseAgreementWebsite, String trayIconUriString) {
@@ -223,5 +227,30 @@ public class StickerPackDetailsActivity extends AddStickerPackActivity {
                 stickerPackDetailsActivity.updateAddUI(isWhitelisted);
             }
         }
+    }
+
+    private void loadPackData() {
+        if (allStickers != null) {
+            allStickers.clear();
+        }
+        SQLiteDatabase db = stickersDB.getReadableDatabase();
+        Cursor cursor = stickersDB.read_all_data_by_sticker_pack(stickerPack.identifier);
+        try {
+            while (cursor.moveToNext()) {
+                @SuppressLint("Range") String title = cursor.getString(cursor.getColumnIndex(StickersDB.ITEM_TITLE));
+                @SuppressLint("Range") String id = cursor.getString(cursor.getColumnIndex(StickersDB.KEY_ID));
+                @SuppressLint("Range") String itemStickerPack = cursor.getString(cursor.getColumnIndex(StickersDB.ITEM_STICKER_PACK));
+                @SuppressLint("Range") String favStatus = cursor.getString(cursor.getColumnIndex(StickersDB.FAVORITE_STATUS));
+                FavoriteSticker favItem = new FavoriteSticker(title, id, itemStickerPack,favStatus);
+                allStickers.add(favItem);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }finally{
+            if (cursor != null && cursor.isClosed())
+                cursor.close();
+            db.close();
+        }
+
     }
 }

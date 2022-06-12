@@ -14,20 +14,18 @@ import android.os.Parcelable;
 import java.util.List;
 
 class Sticker implements Parcelable {
+
     final String imageFileName;
     final List<String> emojis;
     long size;
     private String favStatus;
-    private String sticker_id;
-    private static Integer counter = 1;
 
     Sticker(String imageFileName, List<String> emojis) {
         this.imageFileName = imageFileName;
         this.emojis = emojis;
         this.favStatus = "0";
-        this.sticker_id = counter.toString();
-        counter++;
     }
+
 
     private Sticker(Parcel in) {
         imageFileName = in.readString();
@@ -71,7 +69,5 @@ class Sticker implements Parcelable {
         this.favStatus = favStatus;
     }
 
-    public String getSticker_id() {
-        return sticker_id;
-    }
+
 }

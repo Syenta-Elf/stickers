@@ -8,10 +8,14 @@
 
 package com.elifnurtelase.stickerapp;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -41,23 +45,35 @@ public class StickerPackListActivity extends AddStickerPackActivity {
     private WhiteListCheckAsyncTask whiteListCheckAsyncTask;
     private ArrayList<StickerPack> stickerPackList;
 
-    public static List<StickerPack> stickerPacks;
+
+    //Favori Menüsü
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.favorites, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.shows_favorites) {
+            launchFavoriteStickersActivity();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void launchFavoriteStickersActivity() {
+             Intent intent = new Intent(StickerPackListActivity.this, FavoriteStickersActivity.class);
+             startActivity(intent);
+    }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sticker_pack_list);
 
-
-
         packRecyclerView = findViewById(R.id.sticker_pack_list);
         stickerPackList = getIntent().getParcelableArrayListExtra(EXTRA_STICKER_PACK_LIST_DATA);
 
-        if(stickerPacks==null){
-            stickerPacks = stickerPackList;
-        }
 
         showStickerPackList(stickerPackList);
         if (getSupportActionBar() != null) {
@@ -140,6 +156,7 @@ public class StickerPackListActivity extends AddStickerPackActivity {
                 stickerPackListActivity.allStickerPacksListAdapter.notifyDataSetChanged();
             }
         }
+
     }
 
 }

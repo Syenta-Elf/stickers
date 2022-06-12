@@ -9,11 +9,13 @@
 package com.elifnurtelase.stickerapp;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.Uri;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,6 +23,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+
+import java.util.ArrayList;
 
 public class StickerPreviewAdapter extends RecyclerView.Adapter<StickerPreviewViewHolder> {
 
@@ -39,6 +43,12 @@ public class StickerPreviewAdapter extends RecyclerView.Adapter<StickerPreviewVi
     private final LayoutInflater layoutInflater;
     private RecyclerView recyclerView;
     private View clickedStickerPreview;
+
+    private  ImageButton favButton;
+    private StickersDB stickersDB;
+
+    ArrayList<FavoriteSticker> allStickers = new ArrayList<>();
+
     float expandedViewLeftX;
     float expandedViewTopY;
 
@@ -49,14 +59,17 @@ public class StickerPreviewAdapter extends RecyclerView.Adapter<StickerPreviewVi
             final int cellPadding,
             @NonNull final StickerPack stickerPack,
             final SimpleDraweeView expandedStickerView,
-            final Context context) {
+            StickersDB stickersDB,
+            ArrayList<FavoriteSticker> allStickers) {
         this.cellSize = cellSize;
         this.cellPadding = cellPadding;
+        this.stickersDB = stickersDB;
         this.cellLimit = 0;
         this.layoutInflater = layoutInflater;
         this.errorResource = errorResource;
         this.stickerPack = stickerPack;
         this.expandedStickerPreview = expandedStickerView;
+        this.allStickers = allStickers;
     }
 
     @NonNull
@@ -65,6 +78,7 @@ public class StickerPreviewAdapter extends RecyclerView.Adapter<StickerPreviewVi
 
         View itemView = layoutInflater.inflate(R.layout.sticker_image_item, viewGroup, false);
         StickerPreviewViewHolder vh = new StickerPreviewViewHolder(itemView);
+        favButton = viewGroup.findViewById(R.id.not_favorite_sticker);
 
         ViewGroup.LayoutParams layoutParams = vh.stickerPreviewView.getLayoutParams();
         layoutParams.height = cellSize;
@@ -72,14 +86,24 @@ public class StickerPreviewAdapter extends RecyclerView.Adapter<StickerPreviewVi
         vh.stickerPreviewView.setLayoutParams(layoutParams);
         vh.stickerPreviewView.setPadding(cellPadding, cellPadding, cellPadding, cellPadding);
 
-        return vh;
+        return vh.linkAdapter(this,stickersDB);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final StickerPreviewViewHolder stickerPreviewViewHolder, final int i) {
         stickerPreviewViewHolder.stickerPreviewView.setImageResource(errorResource);
-        stickerPreviewViewHolder.stickerPreviewView.setImageURI(StickerPackLoader.getStickerAssetUri(stickerPack.identifier, stickerPack.getStickers().get(i).imageFileName));
+        stickerPreviewViewHolder.stickerPreviewView.setImageURI(StickerPackLoader.getStickerAssetUri(allStickers.get(i).getItem_pack_number(), allStickers.get(i).getItem_title()));
         stickerPreviewViewHolder.stickerPreviewView.setOnClickListener(v -> expandPreview(i, stickerPreviewViewHolder.stickerPreviewView));
+        setFavButtonAppearance(stickerPreviewViewHolder.imageButton,allStickers.get(i));
+
+    }
+    //önceden kaydedilmiş olanları göstermek için
+    private void setFavButtonAppearance(ImageView favButton, FavoriteSticker sticker) {
+            if(sticker.getFavStatus().equals("0")){
+                favButton.setImageResource(R.drawable.heart);
+            }else{
+                favButton.setImageResource(R.drawable.heart_fill);
+            }
     }
 
     @Override
@@ -209,4 +233,5 @@ public class StickerPreviewAdapter extends RecyclerView.Adapter<StickerPreviewVi
         }
         return numberOfPreviewImagesInPack;
     }
+
 }

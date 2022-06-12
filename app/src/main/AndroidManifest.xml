@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.elifnurtelase.stickerapp" >
+    package="com.elifnurtelase.stickerapp">
     <!--
      to be able to query the whitelist status in WhatsApp 
      https://developer.android.com/training/basics/intents/package-visibility#package-name
@@ -21,8 +21,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="GoogleAppIndexingWarning" >
-
+        tools:ignore="GoogleAppIndexingWarning">
         <!-- Add Mob -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
@@ -30,7 +29,7 @@
 
         <activity
             android:name=".EntryActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -44,7 +43,7 @@
         <activity
             android:name=".StickerPackDetailsActivity"
             android:parentActivityName=".StickerPackListActivity"
-            tools:ignore="UnusedAttribute" >
+            tools:ignore="UnusedAttribute">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.elifnurtelase.stickerapp.StickerPackListActivity" />
@@ -53,10 +52,18 @@
             android:name=".StickerPackInfoActivity"
             android:label="@string/title_activity_sticker_pack_info"
             android:parentActivityName=".StickerPackDetailsActivity"
-            tools:ignore="UnusedAttribute" >
+            tools:ignore="UnusedAttribute">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.elifnurtelase.stickerapp.StickerPackDetailsActivity" />
+        </activity>
+        <activity android:name=".FavoriteStickersActivity"
+            android:label="favorite"
+            android:parentActivityName=".StickerPackListActivity"
+            tools:ignore="UnusedAttribute">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.elifnurtelase.stickerapp.StickerPackListActivity" />
         </activity>
 
         <provider

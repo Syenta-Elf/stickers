@@ -32,7 +32,9 @@ public class EntryActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entry);
+
         stickersDB = new StickersDB(this);
+
         overridePendingTransition(0, 0);
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
@@ -47,8 +49,9 @@ public class EntryActivity extends BaseActivity {
         progressBar.setVisibility(View.GONE);
         //StickerPackListActivity Changed with WelcomeActivity
         if (stickerPackList.size() > 1) {
-            final Intent intent = new Intent(this, WelcomeActivity.class);
 
+            final Intent intent = new Intent(this, WelcomeActivity.class);
+            //uygulama ilk yüklendiğinde kaydedilecek ufak bir data, tablo oluşturulup içine veri ekleniyor
             SharedPreferences prefs = this.getSharedPreferences("prefs", Context.MODE_PRIVATE);
             boolean firstStart = prefs.getBoolean("firstStart", true);
             if(firstStart){
@@ -82,6 +85,7 @@ public class EntryActivity extends BaseActivity {
         if (loadListAsyncTask != null && !loadListAsyncTask.isCancelled()) {
             loadListAsyncTask.cancel(true);
         }
+
     }
 
     static class LoadListAsyncTask extends AsyncTask<Void, Void, Pair<String, ArrayList<StickerPack>>> {
@@ -127,12 +131,18 @@ public class EntryActivity extends BaseActivity {
             }
         }
     }
+
+    //StickerDB içine veriler ekleniyor
     private void createTableOnFirstStart(ArrayList<StickerPack> stickerPackList) {
 
-        stickerPackList.forEach(stickerPack -> stickerPack.getStickers().forEach(sticker -> stickersDB.insertIntoTheDatabase(stickerPack.getStickers().indexOf(sticker),sticker.imageFileName,stickerPack.identifier,sticker.getSticker_id(),"0")));
+        stickerPackList.forEach(stickerPack -> stickerPack.getStickers().forEach(sticker -> {
+            stickersDB.insertIntoTheDatabase(sticker.imageFileName,stickerPack.identifier,"0");
+        }));
+
         SharedPreferences prefs = this.getSharedPreferences("prefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean("firstStart", false);
         editor.apply();
+        stickersDB.close();
     }
 }
